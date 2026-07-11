@@ -1,6 +1,6 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
 import { mockAccounts, mockContacts, mockOpportunities, owners } from './mockData';
-import type { Account, AccountPatch, Contact, ContactInput, DataMode, Opportunity, OpportunityInput, OpportunityPatch } from './types';
+import type { Account, AccountInput, AccountPatch, Contact, ContactInput, DataMode, Opportunity, OpportunityInput, OpportunityPatch } from './types';
 
 type Notice = { id: number; tone: 'success' | 'error'; message: string } | null;
 
@@ -14,6 +14,7 @@ interface SalesDataContextValue {
   updateOpportunity: (id: string, patch: OpportunityPatch) => Promise<void>;
   createOpportunity: (input: OpportunityInput) => Promise<void>;
   updateAccount: (id: string, patch: AccountPatch) => Promise<void>;
+  createAccount: (input: AccountInput) => Promise<void>;
   createContact: (input: ContactInput) => Promise<void>;
 }
 
@@ -39,6 +40,22 @@ function nextProbability(stageName: Opportunity['stageName'], current: number) {
     'Closed Lost': 0,
   };
   return current === 0 || current === 100 ? defaults[stageName] : Math.max(current, defaults[stageName]);
+}
+
+function applyAccountPatch(account: Account, patch: AccountPatch): Account {
+  return {
+    ...account,
+    name: patch.name ?? account.name,
+    industry: patch.industry === null ? '' : (patch.industry ?? account.industry),
+    type: patch.type === null ? '' : (patch.type ?? account.type),
+    billingCity: patch.billingCity === null ? '' : (patch.billingCity ?? account.billingCity),
+    billingState: patch.billingState === null ? '' : (patch.billingState ?? account.billingState),
+    phone: patch.phone === null ? '' : (patch.phone ?? account.phone),
+    website: patch.website === null ? '' : (patch.website ?? account.website),
+    annualRevenue: patch.annualRevenue === null ? 0 : (patch.annualRevenue ?? account.annualRevenue),
+    employees: patch.employees === null ? 0 : (patch.employees ?? account.employees),
+    lastModifiedDate: now(),
+  };
 }
 
 export function SalesDataProvider({ children }: { children: ReactNode }) {
@@ -82,8 +99,26 @@ export function SalesDataProvider({ children }: { children: ReactNode }) {
       setNotice({ id: Date.now(), tone: 'success', message: 'Opportunity created in demo data.' });
     },
     updateAccount: async (id, patch) => {
-      setAccounts((current) => current.map((account) => account.id === id ? { ...account, ...patch, lastModifiedDate: now() } : account));
+      setAccounts((current) => current.map((account) => account.id === id ? applyAccountPatch(account, patch) : account));
       setNotice({ id: Date.now(), tone: 'success', message: 'Account updated in demo data.' });
+    },
+    createAccount: async (input) => {
+      const record: Account = {
+        id: `a-demo-${Date.now()}`,
+        name: input.name,
+        industry: input.industry ?? '',
+        type: input.type ?? '',
+        billingCity: input.billingCity ?? '',
+        billingState: input.billingState ?? '',
+        phone: input.phone ?? '',
+        website: input.website ?? '',
+        annualRevenue: input.annualRevenue ?? 0,
+        employees: input.employees ?? 0,
+        owner: owners[0],
+        lastModifiedDate: now(),
+      };
+      setAccounts((current) => [record, ...current]);
+      setNotice({ id: Date.now(), tone: 'success', message: 'Account created in demo data.' });
     },
     createContact: async (input) => {
       const record: Contact = { ...input, id: `c-demo-${Date.now()}`, owner: owners[0], lastModifiedDate: now() };

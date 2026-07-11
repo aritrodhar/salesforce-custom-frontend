@@ -25,6 +25,19 @@ export interface Account {
   lastModifiedDate: string;
 }
 
+export interface PicklistOption {
+  label: string;
+  value: string;
+}
+
+export interface AccountFieldOptions {
+  industry: PicklistOption[];
+  type: PicklistOption[];
+}
+
+export type AccountWritableFields = Pick<Account, 'name' | 'industry' | 'type' | 'billingCity' | 'billingState' | 'phone' | 'website' | 'annualRevenue' | 'employees'>;
+export type AccountInput = Pick<AccountWritableFields, 'name'> & Partial<Omit<AccountWritableFields, 'name'>>;
+
 export interface Contact {
   id: string;
   accountId: string;
@@ -57,7 +70,9 @@ export interface Opportunity {
 
 export type OpportunityInput = Omit<Opportunity, 'id' | 'owner' | 'lastModifiedDate' | 'isClosed' | 'isWon'>;
 export type OpportunityPatch = Partial<Pick<Opportunity, 'name' | 'stageName' | 'amount' | 'probability' | 'closeDate' | 'nextStep' | 'type' | 'leadSource' | 'description'>>;
-export type AccountPatch = Partial<Pick<Account, 'name' | 'industry' | 'type' | 'billingCity' | 'billingState' | 'phone' | 'website' | 'annualRevenue' | 'employees'>>;
+export type AccountPatch = Partial<{
+  [Field in keyof AccountWritableFields]: AccountWritableFields[Field] | null;
+}>;
 export type ContactInput = Omit<Contact, 'id' | 'owner' | 'lastModifiedDate'>;
 
 export const opportunityStages: OpportunityStage[] = [

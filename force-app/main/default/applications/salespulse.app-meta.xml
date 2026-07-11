@@ -10,7 +10,7 @@
     <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
     <isNavTabPersistenceDisabled>false</isNavTabPersistenceDisabled>
     <isOmniPinnedViewEnabled>false</isOmniPinnedViewEnabled>
-    <label>salespulse</label>
+    <label>Sales Pulse — Quiet Operator</label>
     <navType>Standard</navType>
     <uiBundle>c__salespulse</uiBundle>
     <uiType>Lightning</uiType>

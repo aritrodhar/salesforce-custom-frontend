@@ -18,11 +18,11 @@ function App() {
   const accountName = (id: string) => accounts.find(a => a.id === id)?.name ?? 'Unassigned account';
   const stages = useMemo(() => [...new Set([...defaultStages, ...opportunities.map(o => o.stageName)])], [opportunities]);
   const save = async (opportunity: Opportunity, values: Pick<Opportunity, 'stageName' | 'amount' | 'closeDate' | 'nextStep'>) => {
-    if (!live || !confirm(`Save changes to ${opportunity.name} in Salesforce?`)) return;
+    if (!live) return;
     try { await updateSalesforceOpportunity({ id: opportunity.id, ...values }); await refresh(); setEditing(null); setNotice('Opportunity updated in Salesforce.'); } catch (e) { setNotice(`Save failed: ${e instanceof Error ? e.message : 'Unknown Salesforce error'}`); }
   };
   const create = async (input: OpportunityInput) => {
-    if (!live || !confirm(`Create ${input.name} in Salesforce?`)) return;
+    if (!live) return;
     try { await createSalesforceOpportunity(input); await refresh(); setCreating(false); setNotice('Opportunity created in Salesforce.'); } catch (e) { setNotice(`Create failed: ${e instanceof Error ? e.message : 'Unknown Salesforce error'}`); }
   };
   const filtered = opportunities.filter(o => `${o.name} ${accountName(o.accountId)} ${o.stageName}`.toLowerCase().includes(query.toLowerCase()));

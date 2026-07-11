@@ -1,0 +1,9 @@
+{
+  "permsetAssignments": {
+    "assignments": {
+      "salespulse_Access": {
+        "assignee": "currentUser"
+      }
+    }
+  }
+}

@@ -1,14 +1,7 @@
 export type DataMode = 'mock' | 'salesforce-readonly' | 'salesforce-live';
 
-export type OpportunityStage =
-  | 'Prospecting'
-  | 'Qualification'
-  | 'Needs Analysis'
-  | 'Value Proposition'
-  | 'Proposal/Price Quote'
-  | 'Negotiation/Review'
-  | 'Closed Won'
-  | 'Closed Lost';
+/** Salesforce admins can configure custom StageName values. */
+export type OpportunityStage = string;
 
 export interface Owner {
   id: string;

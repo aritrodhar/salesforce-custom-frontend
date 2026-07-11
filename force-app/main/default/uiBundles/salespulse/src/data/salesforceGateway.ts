@@ -23,9 +23,9 @@ export async function loadSalesforceSalesPulseData(): Promise<{ accounts: Accoun
 
 export async function updateSalesforceOpportunity(input: { id: string; stageName?: string; amount?: number; closeDate?: string; nextStep?: string }) {
   const values: Record<string, string | number> = {}; if (input.stageName !== undefined) values.StageName = input.stageName; if (input.amount !== undefined) values.Amount = input.amount; if (input.closeDate !== undefined) values.CloseDate = input.closeDate; if (input.nextStep !== undefined) values.NextStep = input.nextStep;
-  const sdk = await createDataSDK(); const result = await sdk.graphql?.mutate({ mutation: updateOpportunityMutation, variables: { input: { Id: input.id, ...values } } }); assertResult(result); return result?.data;
+  const sdk = await createDataSDK(); const result = await sdk.graphql?.mutate({ mutation: updateOpportunityMutation, variables: { input: { Opportunity: { Id: input.id, ...values } } } }); assertResult(result); return result?.data;
 }
 
 export async function createSalesforceOpportunity(input: OpportunityInput) {
-  const sdk = await createDataSDK(); const result = await sdk.graphql?.mutate({ mutation: createOpportunityMutation, variables: { input: { Name: input.name, AccountId: input.accountId, StageName: input.stageName, Amount: input.amount, CloseDate: input.closeDate, NextStep: input.nextStep, Type: input.type || undefined, LeadSource: input.leadSource || undefined } } }); assertResult(result); return result?.data;
+  const sdk = await createDataSDK(); const result = await sdk.graphql?.mutate({ mutation: createOpportunityMutation, variables: { input: { Opportunity: { Name: input.name, AccountId: input.accountId, StageName: input.stageName, Amount: input.amount, CloseDate: input.closeDate, NextStep: input.nextStep, Type: input.type || undefined, LeadSource: input.leadSource || undefined } } } }); assertResult(result); return result?.data;
 }
